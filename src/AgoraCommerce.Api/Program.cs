@@ -1,3 +1,5 @@
+using AgoraCommerce.Api.Middleware;
+using AgoraCommerce.Application.DependencyInjection;
 using AgoraCommerce.Infrastructure.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +11,7 @@ services.AddControllers();
 services.AddEndpointsApiExplorer();
 services.AddSwaggerGen();
 services.AddHealthChecks();
+services.AddApplication();
 services.AddInfrastructure(configuration);
 
 var app = builder.Build();
@@ -23,8 +26,11 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseMiddleware<ApiExceptionMiddleware>();
 
 app.MapControllers();
 app.MapHealthChecks("/health");
 
 app.Run();
+
+public partial class Program;

@@ -1,3 +1,4 @@
+using AgoraCommerce.Application.Abstractions;
 using AgoraCommerce.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -25,6 +26,7 @@ public static class InfrastructureServiceCollectionExtensions
 
         services.AddDbContext<AgoraCommerceDbContext>(options =>
             options.UseMySql(connectionString, serverVersion));
+        services.AddScoped<IAgoraCommerceDbContext>(sp => sp.GetRequiredService<AgoraCommerceDbContext>());
 
         return services;
     }

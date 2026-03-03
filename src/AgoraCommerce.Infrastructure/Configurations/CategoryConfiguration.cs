@@ -15,5 +15,21 @@ public class CategoryConfiguration : IEntityTypeConfiguration<Category>
         builder.Property(category => category.Name)
             .IsRequired()
             .HasMaxLength(200);
+
+        builder.Property(category => category.Slug)
+            .IsRequired()
+            .HasMaxLength(200);
+
+        builder.Property(category => category.IsActive)
+            .IsRequired();
+
+        builder.Property(category => category.CreatedAt)
+            .IsRequired();
+
+        builder.Property(category => category.UpdatedAt)
+            .IsRequired();
+
+        builder.HasIndex(category => category.Slug)
+            .IsUnique();
     }
 }
