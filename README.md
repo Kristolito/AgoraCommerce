@@ -31,13 +31,22 @@ References: Application + Domain
    ```bash
    dotnet build AgoraCommerce.sln
    ```
-2. Run API:
+2. Start MySQL with Docker:
+   ```bash
+   docker compose up -d
+   ```
+3. Apply EF Core migrations:
+   ```bash
+   dotnet ef migrations add InitialCreate --project src/AgoraCommerce.Infrastructure --startup-project src/AgoraCommerce.Api
+   dotnet ef database update --project src/AgoraCommerce.Infrastructure --startup-project src/AgoraCommerce.Api
+   ```
+4. Run API:
    ```bash
    dotnet run --project src/AgoraCommerce.Api
    ```
-3. Open Swagger in development:
+5. Open Swagger in development:
    `https://localhost:<port>/swagger`
-4. Health endpoint:
+6. Health endpoint:
    `GET https://localhost:<port>/health`
 
 ## Phase Instructions

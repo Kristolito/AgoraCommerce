@@ -17,6 +17,9 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+
+    var startupLogger = app.Services.GetRequiredService<ILogger<Program>>();
+    startupLogger.LogInformation("Database is configured for development using ConnectionStrings:Default.");
 }
 
 app.UseHttpsRedirection();

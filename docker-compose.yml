@@ -1,0 +1,16 @@
+services:
+  mysql:
+    image: mysql:8
+    container_name: agoracommerce-mysql
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: Password123!
+      MYSQL_DATABASE: agoracommerce
+    command: --default-authentication-plugin=mysql_native_password
+    volumes:
+      - agoracommerce-mysql-data:/var/lib/mysql
+
+volumes:
+  agoracommerce-mysql-data:
