@@ -9,5 +9,9 @@ public interface IAgoraCommerceDbContext
 
     DbSet<Category> Categories { get; }
 
+    DbSet<Basket> Baskets { get; }
+
+    DbSet<BasketItem> BasketItems { get; }
+
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

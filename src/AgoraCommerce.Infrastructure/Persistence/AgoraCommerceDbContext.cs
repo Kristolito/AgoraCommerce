@@ -11,10 +11,16 @@ public class AgoraCommerceDbContext(DbContextOptions<AgoraCommerceDbContext> opt
 
     public DbSet<Category> Categories => Set<Category>();
 
+    public DbSet<Basket> Baskets => Set<Basket>();
+
+    public DbSet<BasketItem> BasketItems => Set<BasketItem>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfiguration(new ProductConfiguration());
         modelBuilder.ApplyConfiguration(new CategoryConfiguration());
+        modelBuilder.ApplyConfiguration(new BasketConfiguration());
+        modelBuilder.ApplyConfiguration(new BasketItemConfiguration());
 
         base.OnModelCreating(modelBuilder);
     }
@@ -46,6 +52,14 @@ public class AgoraCommerceDbContext(DbContextOptions<AgoraCommerceDbContext> opt
             if (entry.State == EntityState.Modified)
             {
                 entry.Entity.Touch(now);
+            }
+        }
+
+        foreach (var entry in ChangeTracker.Entries<Basket>())
+        {
+            if (entry.State == EntityState.Added || entry.State == EntityState.Modified)
+            {
+                entry.Entity.Touch();
             }
         }
 

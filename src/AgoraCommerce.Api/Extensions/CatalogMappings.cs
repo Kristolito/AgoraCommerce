@@ -1,8 +1,10 @@
 using AgoraCommerce.Contracts.Catalog.Categories;
 using AgoraCommerce.Contracts.Catalog.Products;
+using AgoraCommerce.Contracts.Basket;
 using AgoraCommerce.Contracts.Common;
 using AgoraCommerce.Domain.Entities;
 using AgoraCommerce.Application.Common.Models;
+using AgoraCommerce.Application.Features.Basket;
 
 namespace AgoraCommerce.Api.Extensions;
 
@@ -29,5 +31,24 @@ public static class CatalogMappings
             Page = result.Page,
             PageSize = result.PageSize,
             Total = result.Total
+        };
+
+    public static BasketDto ToDto(this BasketModel basket) =>
+        new()
+        {
+            BasketId = basket.BasketId,
+            AnonymousId = basket.AnonymousId,
+            Items = basket.Items.Select(item => new BasketItemDto
+            {
+                ProductId = item.ProductId,
+                Name = item.Name,
+                Sku = item.Sku,
+                Quantity = item.Quantity,
+                UnitPrice = item.UnitPrice,
+                Currency = item.Currency,
+                LineTotal = item.LineTotal
+            }).ToList(),
+            Subtotal = basket.Subtotal,
+            UpdatedAt = basket.UpdatedAt
         };
 }

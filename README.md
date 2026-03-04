@@ -74,6 +74,44 @@ Soft delete product (admin):
 curl -X DELETE http://localhost:5085/api/v1/admin/products/<PRODUCT_ID>
 ```
 
+## Basket Examples
+
+Basket uses `X-Anonymous-Id` for anonymous carts. If the header is missing, the API generates one and returns it in response headers.
+
+Get basket:
+```bash
+curl -H "X-Anonymous-Id: <ANON_GUID>" \
+  http://localhost:5085/api/v1/basket
+```
+
+Add basket item:
+```bash
+curl -X POST http://localhost:5085/api/v1/basket/items \
+  -H "Content-Type: application/json" \
+  -H "X-Anonymous-Id: <ANON_GUID>" \
+  -d '{"productId":"<PRODUCT_ID>","quantity":2}'
+```
+
+Update basket item quantity:
+```bash
+curl -X PUT http://localhost:5085/api/v1/basket/items/<PRODUCT_ID> \
+  -H "Content-Type: application/json" \
+  -H "X-Anonymous-Id: <ANON_GUID>" \
+  -d '{"quantity":3}'
+```
+
+Remove basket item:
+```bash
+curl -X DELETE http://localhost:5085/api/v1/basket/items/<PRODUCT_ID> \
+  -H "X-Anonymous-Id: <ANON_GUID>"
+```
+
+Clear basket:
+```bash
+curl -X DELETE http://localhost:5085/api/v1/basket \
+  -H "X-Anonymous-Id: <ANON_GUID>"
+```
+
 ## Tests
 
 Unit tests:
