@@ -112,6 +112,45 @@ curl -X DELETE http://localhost:5085/api/v1/basket \
   -H "X-Anonymous-Id: <ANON_GUID>"
 ```
 
+## Checkout & Orders Examples
+
+Checkout requires both headers:
+- `X-Anonymous-Id` for basket/order ownership (when no auth)
+- `Idempotency-Key` to make retries safe
+
+Create order from basket:
+```bash
+curl -X POST http://localhost:5085/api/v1/checkout \
+  -H "Content-Type: application/json" \
+  -H "X-Anonymous-Id: <ANON_GUID>" \
+  -H "Idempotency-Key: <UNIQUE_KEY>" \
+  -d '{
+    "shippingAddress": {
+      "line1": "221B Baker Street",
+      "line2": "",
+      "city": "London",
+      "postcode": "NW1",
+      "country": "GB"
+    }
+  }'
+```
+
+Idempotency behavior:
+- First request with a new `Idempotency-Key` creates an order (`201 Created`)
+- Repeating the same request with the same key returns the same order (`200 OK`) without creating duplicates
+
+Get orders for owner:
+```bash
+curl -H "X-Anonymous-Id: <ANON_GUID>" \
+  "http://localhost:5085/api/v1/orders?page=1&pageSize=20"
+```
+
+Get order by id:
+```bash
+curl -H "X-Anonymous-Id: <ANON_GUID>" \
+  "http://localhost:5085/api/v1/orders/<ORDER_ID>"
+```
+
 ## Tests
 
 Unit tests:

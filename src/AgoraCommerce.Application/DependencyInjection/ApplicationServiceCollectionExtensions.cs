@@ -1,6 +1,8 @@
 using AgoraCommerce.Application.Features.Catalog.Categories;
 using AgoraCommerce.Application.Features.Catalog.Products;
 using AgoraCommerce.Application.Features.Basket;
+using AgoraCommerce.Application.Features.Checkout;
+using AgoraCommerce.Application.Features.Orders;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,6 +15,8 @@ public static class ApplicationServiceCollectionExtensions
         services.AddScoped<ICategoryService, CategoryService>();
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<IBasketService, BasketService>();
+        services.AddScoped<ICheckoutService, CheckoutService>();
+        services.AddScoped<IOrderService, OrderService>();
 
         services.AddScoped<IValidator<CreateCategoryCommand>, CreateCategoryCommandValidator>();
         services.AddScoped<IValidator<UpdateCategoryCommand>, UpdateCategoryCommandValidator>();
@@ -24,6 +28,9 @@ public static class ApplicationServiceCollectionExtensions
         services.AddScoped<IValidator<UpdateBasketItemQuantityCommand>, UpdateBasketItemQuantityCommandValidator>();
         services.AddScoped<IValidator<RemoveBasketItemCommand>, RemoveBasketItemCommandValidator>();
         services.AddScoped<IValidator<ClearBasketCommand>, ClearBasketCommandValidator>();
+        services.AddScoped<IValidator<CheckoutBasketCommand>, CheckoutBasketCommandValidator>();
+        services.AddScoped<IValidator<GetOrdersQuery>, GetOrdersQueryValidator>();
+        services.AddScoped<IValidator<GetOrderByIdQuery>, GetOrderByIdQueryValidator>();
 
         return services;
     }

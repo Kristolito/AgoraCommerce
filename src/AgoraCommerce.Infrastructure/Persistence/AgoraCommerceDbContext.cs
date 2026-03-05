@@ -2,6 +2,7 @@ using AgoraCommerce.Application.Abstractions;
 using AgoraCommerce.Domain.Entities;
 using AgoraCommerce.Infrastructure.Configurations;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace AgoraCommerce.Infrastructure.Persistence;
 
@@ -15,12 +16,21 @@ public class AgoraCommerceDbContext(DbContextOptions<AgoraCommerceDbContext> opt
 
     public DbSet<BasketItem> BasketItems => Set<BasketItem>();
 
+    public DbSet<Order> Orders => Set<Order>();
+
+    public DbSet<OrderLine> OrderLines => Set<OrderLine>();
+
+    public DbSet<CheckoutRequest> CheckoutRequests => Set<CheckoutRequest>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfiguration(new ProductConfiguration());
         modelBuilder.ApplyConfiguration(new CategoryConfiguration());
         modelBuilder.ApplyConfiguration(new BasketConfiguration());
         modelBuilder.ApplyConfiguration(new BasketItemConfiguration());
+        modelBuilder.ApplyConfiguration(new OrderConfiguration());
+        modelBuilder.ApplyConfiguration(new OrderLineConfiguration());
+        modelBuilder.ApplyConfiguration(new CheckoutRequestConfiguration());
 
         base.OnModelCreating(modelBuilder);
     }
@@ -64,5 +74,10 @@ public class AgoraCommerceDbContext(DbContextOptions<AgoraCommerceDbContext> opt
         }
 
         return base.SaveChangesAsync(cancellationToken);
+    }
+
+    public Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)
+    {
+        return Database.BeginTransactionAsync(cancellationToken);
     }
 }

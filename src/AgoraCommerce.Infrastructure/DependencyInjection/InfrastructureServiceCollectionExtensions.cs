@@ -27,6 +27,7 @@ public static class InfrastructureServiceCollectionExtensions
         services.AddDbContext<AgoraCommerceDbContext>(options =>
             options.UseMySql(connectionString, serverVersion));
         services.AddScoped<IAgoraCommerceDbContext>(sp => sp.GetRequiredService<AgoraCommerceDbContext>());
+        services.AddSingleton<IOrderNumberGenerator, OrderNumberGenerator>();
 
         return services;
     }

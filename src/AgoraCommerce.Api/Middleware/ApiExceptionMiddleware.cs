@@ -27,6 +27,7 @@ public sealed class ApiExceptionMiddleware(RequestDelegate next, ILogger<ApiExce
         {
             ValidationException validationException => BuildValidationProblem(validationException),
             NotFoundException notFound => BuildProblem((int)HttpStatusCode.NotFound, "Not Found", notFound.Message),
+            ForbiddenException forbidden => BuildProblem((int)HttpStatusCode.Forbidden, "Forbidden", forbidden.Message),
             ConflictException conflict => BuildProblem((int)HttpStatusCode.Conflict, "Conflict", conflict.Message),
             _ => BuildProblem((int)HttpStatusCode.InternalServerError, "Internal Server Error", "An unexpected error occurred.")
         };

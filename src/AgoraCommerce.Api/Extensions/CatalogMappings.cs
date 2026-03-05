@@ -1,10 +1,14 @@
 using AgoraCommerce.Contracts.Catalog.Categories;
 using AgoraCommerce.Contracts.Catalog.Products;
 using AgoraCommerce.Contracts.Basket;
+using AgoraCommerce.Contracts.Checkout;
+using AgoraCommerce.Contracts.Orders;
 using AgoraCommerce.Contracts.Common;
 using AgoraCommerce.Domain.Entities;
 using AgoraCommerce.Application.Common.Models;
 using AgoraCommerce.Application.Features.Basket;
+using AgoraCommerce.Application.Features.Checkout;
+using AgoraCommerce.Application.Features.Orders;
 
 namespace AgoraCommerce.Api.Extensions;
 
@@ -50,5 +54,48 @@ public static class CatalogMappings
             }).ToList(),
             Subtotal = basket.Subtotal,
             UpdatedAt = basket.UpdatedAt
+        };
+
+    public static CheckoutResponse ToDto(this CheckoutResultModel result) =>
+        new()
+        {
+            OrderId = result.OrderId,
+            OrderNumber = result.OrderNumber,
+            Status = (OrderStatusDto)result.Status,
+            Subtotal = result.Subtotal,
+            Discount = result.Discount,
+            Total = result.Total,
+            Currency = result.Currency,
+            CreatedAt = result.CreatedAt
+        };
+
+    public static OrderDto ToDto(this OrderModel order) =>
+        new()
+        {
+            OrderId = order.OrderId,
+            OrderNumber = order.OrderNumber,
+            Status = (OrderStatusDto)order.Status,
+            Subtotal = order.Subtotal,
+            Discount = order.Discount,
+            Total = order.Total,
+            Currency = order.Currency,
+            ShippingAddress = new AddressDto
+            {
+                Line1 = order.ShippingAddress.Line1,
+                Line2 = order.ShippingAddress.Line2,
+                City = order.ShippingAddress.City,
+                Postcode = order.ShippingAddress.Postcode,
+                Country = order.ShippingAddress.Country
+            },
+            Lines = order.Lines.Select(x => new OrderLineDto
+            {
+                ProductId = x.ProductId,
+                ProductName = x.ProductName,
+                Sku = x.Sku,
+                Quantity = x.Quantity,
+                UnitPrice = x.UnitPrice,
+                LineTotal = x.LineTotal
+            }).ToList(),
+            CreatedAt = order.CreatedAt
         };
 }
