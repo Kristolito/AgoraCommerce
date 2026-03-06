@@ -36,7 +36,8 @@ public sealed class CheckoutController(ICheckoutService checkoutService) : Contr
                 request.ShippingAddress.Line2,
                 request.ShippingAddress.City,
                 request.ShippingAddress.Postcode,
-                request.ShippingAddress.Country));
+                request.ShippingAddress.Country),
+            request.CouponCode);
 
         var result = await checkoutService.CheckoutBasketAsync(command, cancellationToken);
         EnsureAnonymousHeader(anonymousId);

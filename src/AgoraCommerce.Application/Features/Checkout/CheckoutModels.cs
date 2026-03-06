@@ -18,4 +18,5 @@ public sealed record CheckoutResultModel(
     decimal Total,
     string Currency,
     DateTimeOffset CreatedAt,
+    string? CouponCode,
     bool IsFromIdempotencyReplay);

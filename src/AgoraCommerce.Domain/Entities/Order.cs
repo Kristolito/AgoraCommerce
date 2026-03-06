@@ -27,6 +27,8 @@ public class Order
 
     public string Currency { get; private set; } = "GBP";
 
+    public string? CouponCode { get; private set; }
+
     public Address ShippingAddress { get; private set; } = null!;
 
     public DateTimeOffset CreatedAt { get; private set; }
@@ -38,6 +40,7 @@ public class Order
         Guid? userId,
         Guid? anonymousId,
         string currency,
+        string? couponCode,
         Address shippingAddress,
         IEnumerable<OrderLine> lines,
         decimal discount)
@@ -77,6 +80,7 @@ public class Order
             Discount = discount,
             Total = total,
             Currency = string.IsNullOrWhiteSpace(currency) ? "GBP" : currency.Trim().ToUpperInvariant(),
+            CouponCode = string.IsNullOrWhiteSpace(couponCode) ? null : couponCode.Trim().ToUpperInvariant(),
             ShippingAddress = shippingAddress,
             CreatedAt = DateTimeOffset.UtcNow,
             Lines = list

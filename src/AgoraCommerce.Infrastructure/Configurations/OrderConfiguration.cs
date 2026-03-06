@@ -20,6 +20,9 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
             .IsRequired()
             .HasMaxLength(3);
 
+        builder.Property(x => x.CouponCode)
+            .HasMaxLength(64);
+
         builder.Property(x => x.Subtotal)
             .HasPrecision(18, 2);
 

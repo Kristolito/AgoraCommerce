@@ -2,6 +2,7 @@ using AgoraCommerce.Application.Features.Catalog.Categories;
 using AgoraCommerce.Application.Features.Catalog.Products;
 using AgoraCommerce.Application.Features.Basket;
 using AgoraCommerce.Application.Features.Checkout;
+using AgoraCommerce.Application.Features.Coupons;
 using AgoraCommerce.Application.Features.Orders;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,6 +18,7 @@ public static class ApplicationServiceCollectionExtensions
         services.AddScoped<IBasketService, BasketService>();
         services.AddScoped<ICheckoutService, CheckoutService>();
         services.AddScoped<IOrderService, OrderService>();
+        services.AddScoped<ICouponService, CouponService>();
 
         services.AddScoped<IValidator<CreateCategoryCommand>, CreateCategoryCommandValidator>();
         services.AddScoped<IValidator<UpdateCategoryCommand>, UpdateCategoryCommandValidator>();
@@ -31,6 +33,12 @@ public static class ApplicationServiceCollectionExtensions
         services.AddScoped<IValidator<CheckoutBasketCommand>, CheckoutBasketCommandValidator>();
         services.AddScoped<IValidator<GetOrdersQuery>, GetOrdersQueryValidator>();
         services.AddScoped<IValidator<GetOrderByIdQuery>, GetOrderByIdQueryValidator>();
+        services.AddScoped<IValidator<CreateCouponCommand>, CreateCouponCommandValidator>();
+        services.AddScoped<IValidator<UpdateCouponCommand>, UpdateCouponCommandValidator>();
+        services.AddScoped<IValidator<DeactivateCouponCommand>, DeactivateCouponCommandValidator>();
+        services.AddScoped<IValidator<AdminGetCouponsQuery>, AdminGetCouponsQueryValidator>();
+        services.AddScoped<IValidator<AdminGetCouponByIdQuery>, AdminGetCouponByIdQueryValidator>();
+        services.AddScoped<IValidator<ValidateCouponQuery>, ValidateCouponQueryValidator>();
 
         return services;
     }

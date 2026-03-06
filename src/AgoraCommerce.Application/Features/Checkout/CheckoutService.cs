@@ -87,10 +87,31 @@ public sealed class CheckoutService(
             var now = DateTimeOffset.UtcNow;
             var orderNumber = orderNumberGenerator.Generate(now);
             var currency = basket.Items.Select(x => x.Currency).FirstOrDefault() ?? "GBP";
-            var order = Order.Create(orderNumber, command.UserId, command.AnonymousId, currency, address, lines, 0);
+
+            decimal discount = 0;
+            string? appliedCouponCode = null;
+            Coupon? coupon = null;
+
+            if (!string.IsNullOrWhiteSpace(command.CouponCode))
+            {
+                coupon = await LoadValidCoupon(command.CouponCode, cancellationToken);
+                if (coupon.Type == CouponType.FixedAmount &&
+                    !string.IsNullOrWhiteSpace(coupon.Currency) &&
+                    !string.Equals(coupon.Currency, currency, StringComparison.OrdinalIgnoreCase))
+                {
+                    throw new ConflictException("Coupon currency does not match basket currency.");
+                }
+
+                var subtotal = lines.Sum(x => x.LineTotal);
+                discount = coupon.CalculateDiscount(subtotal);
+                appliedCouponCode = coupon.Code;
+            }
+
+            var order = Order.Create(orderNumber, command.UserId, command.AnonymousId, currency, appliedCouponCode, address, lines, discount);
 
             await dbContext.Orders.AddAsync(order, cancellationToken);
             basket.Clear();
+            coupon?.IncrementRedemption();
             idempotency.MarkProcessed(order.Id);
 
             await dbContext.SaveChangesAsync(cancellationToken);
@@ -133,5 +154,23 @@ public sealed class CheckoutService(
             order.Total,
             order.Currency,
             order.CreatedAt,
+            order.CouponCode,
             isReplay);
+
+    private async Task<Coupon> LoadValidCoupon(string code, CancellationToken cancellationToken)
+    {
+        var normalized = code.Trim().ToUpperInvariant();
+        var coupon = await dbContext.Coupons.FirstOrDefaultAsync(x => x.Code == normalized, cancellationToken);
+        if (coupon is null)
+        {
+            throw new NotFoundException($"Coupon '{normalized}' was not found.");
+        }
+
+        if (!coupon.IsValidAt(DateTimeOffset.UtcNow))
+        {
+            throw new ConflictException("Coupon is inactive, expired, or max redemptions reached.");
+        }
+
+        return coupon;
+    }
 }

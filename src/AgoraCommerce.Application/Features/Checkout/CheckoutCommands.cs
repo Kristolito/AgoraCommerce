@@ -4,4 +4,5 @@ public sealed record CheckoutBasketCommand(
     Guid? UserId,
     Guid? AnonymousId,
     string IdempotencyKey,
-    CheckoutAddressModel ShippingAddress);
+    CheckoutAddressModel ShippingAddress,
+    string? CouponCode);

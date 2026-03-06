@@ -14,6 +14,9 @@ public sealed class CheckoutBasketCommandValidator : AbstractValidator<CheckoutB
             .NotEmpty()
             .MaximumLength(200);
 
+        RuleFor(x => x.CouponCode)
+            .MaximumLength(64);
+
         RuleFor(x => x.ShippingAddress.Line1)
             .NotEmpty()
             .MaximumLength(200);

@@ -22,6 +22,8 @@ public class AgoraCommerceDbContext(DbContextOptions<AgoraCommerceDbContext> opt
 
     public DbSet<CheckoutRequest> CheckoutRequests => Set<CheckoutRequest>();
 
+    public DbSet<Coupon> Coupons => Set<Coupon>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfiguration(new ProductConfiguration());
@@ -31,6 +33,7 @@ public class AgoraCommerceDbContext(DbContextOptions<AgoraCommerceDbContext> opt
         modelBuilder.ApplyConfiguration(new OrderConfiguration());
         modelBuilder.ApplyConfiguration(new OrderLineConfiguration());
         modelBuilder.ApplyConfiguration(new CheckoutRequestConfiguration());
+        modelBuilder.ApplyConfiguration(new CouponConfiguration());
 
         base.OnModelCreating(modelBuilder);
     }

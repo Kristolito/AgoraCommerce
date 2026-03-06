@@ -15,6 +15,7 @@ public sealed class TestAgoraCommerceDbContext(DbContextOptions<TestAgoraCommerc
     public DbSet<Order> Orders => Set<Order>();
     public DbSet<OrderLine> OrderLines => Set<OrderLine>();
     public DbSet<CheckoutRequest> CheckoutRequests => Set<CheckoutRequest>();
+    public DbSet<Coupon> Coupons => Set<Coupon>();
 
     public Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)
     {

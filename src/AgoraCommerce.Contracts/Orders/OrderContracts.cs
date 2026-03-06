@@ -44,6 +44,8 @@ public sealed class OrderDto
 
     public required string Currency { get; init; }
 
+    public string? CouponCode { get; init; }
+
     public required AddressDto ShippingAddress { get; init; }
 
     public required IReadOnlyList<OrderLineDto> Lines { get; init; }

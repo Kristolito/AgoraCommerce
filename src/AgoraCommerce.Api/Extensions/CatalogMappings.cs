@@ -2,12 +2,14 @@ using AgoraCommerce.Contracts.Catalog.Categories;
 using AgoraCommerce.Contracts.Catalog.Products;
 using AgoraCommerce.Contracts.Basket;
 using AgoraCommerce.Contracts.Checkout;
+using AgoraCommerce.Contracts.Coupons;
 using AgoraCommerce.Contracts.Orders;
 using AgoraCommerce.Contracts.Common;
 using AgoraCommerce.Domain.Entities;
 using AgoraCommerce.Application.Common.Models;
 using AgoraCommerce.Application.Features.Basket;
 using AgoraCommerce.Application.Features.Checkout;
+using AgoraCommerce.Application.Features.Coupons;
 using AgoraCommerce.Application.Features.Orders;
 
 namespace AgoraCommerce.Api.Extensions;
@@ -66,6 +68,7 @@ public static class CatalogMappings
             Discount = result.Discount,
             Total = result.Total,
             Currency = result.Currency,
+            CouponCode = result.CouponCode,
             CreatedAt = result.CreatedAt
         };
 
@@ -79,6 +82,7 @@ public static class CatalogMappings
             Discount = order.Discount,
             Total = order.Total,
             Currency = order.Currency,
+            CouponCode = order.CouponCode,
             ShippingAddress = new AddressDto
             {
                 Line1 = order.ShippingAddress.Line1,
@@ -97,5 +101,31 @@ public static class CatalogMappings
                 LineTotal = x.LineTotal
             }).ToList(),
             CreatedAt = order.CreatedAt
+        };
+
+    public static CouponDto ToDto(this CouponModel coupon) =>
+        new()
+        {
+            Id = coupon.Id,
+            Code = coupon.Code,
+            Type = (CouponTypeDto)coupon.Type,
+            Amount = coupon.Amount,
+            Currency = coupon.Currency,
+            IsActive = coupon.IsActive,
+            ActiveFrom = coupon.ActiveFrom,
+            ActiveTo = coupon.ActiveTo,
+            MaxRedemptions = coupon.MaxRedemptions,
+            RedeemedCount = coupon.RedeemedCount,
+            CreatedAt = coupon.CreatedAt,
+            UpdatedAt = coupon.UpdatedAt
+        };
+
+    public static ValidateCouponResponse ToDto(this CouponValidationModel model) =>
+        new()
+        {
+            IsValid = model.IsValid,
+            Reason = model.Reason,
+            Discount = model.Discount,
+            TotalAfterDiscount = model.TotalAfterDiscount
         };
 }

@@ -31,7 +31,7 @@ public class CheckoutAndOrdersEndpointsTests
         await client.PostAsJsonAsync("/api/v1/basket/items", new AddBasketItemRequest(product.Id, 2));
 
         var idempotencyKey = Guid.NewGuid().ToString();
-        var checkoutRequest = new CheckoutRequest(new CheckoutAddressRequest("Line1", null, "City", "P1", "GB"));
+        var checkoutRequest = new CheckoutRequest(new CheckoutAddressRequest("Line1", null, "City", "P1", "GB"), null);
 
         var first = await SendCheckout(client, idempotencyKey, checkoutRequest);
         var second = await SendCheckout(client, idempotencyKey, checkoutRequest);

@@ -77,6 +77,31 @@ public class CheckoutServiceTests
         dbContext.Orders.Count().Should().Be(1);
     }
 
+    [Fact]
+    public async Task Checkout_Idempotency_Should_Not_Redeem_Coupon_Twice()
+    {
+        await using var dbContext = CreateDbContext();
+        var anonymousId = Guid.NewGuid();
+        var category = Category.Create("Category", "category");
+        var product = Product.Create("SKU-3", "Product 3", null, 20m, "GBP", category.Id, "Brand");
+        var coupon = Coupon.Create("SAVE10", Domain.Enums.CouponType.Percent, 10m, null, true, null, null, null);
+        var basket = DomainBasket.Create(null, anonymousId);
+        basket.AddOrIncrementItem(product.Id, 1, product.Price, product.Currency);
+
+        await dbContext.Categories.AddAsync(category);
+        await dbContext.Products.AddAsync(product);
+        await dbContext.Coupons.AddAsync(coupon);
+        await dbContext.Baskets.AddAsync(basket);
+        await dbContext.SaveChangesAsync();
+
+        var service = CreateService(dbContext);
+        var first = await service.CheckoutBasketAsync(CreateCommand(anonymousId, "same-key-coupon", "SAVE10"));
+        var second = await service.CheckoutBasketAsync(CreateCommand(anonymousId, "same-key-coupon", "SAVE10"));
+
+        first.OrderId.Should().Be(second.OrderId);
+        dbContext.Coupons.Single().RedeemedCount.Should().Be(1);
+    }
+
     private static TestAgoraCommerceDbContext CreateDbContext()
     {
         var options = new DbContextOptionsBuilder<TestAgoraCommerceDbContext>()
@@ -94,12 +119,13 @@ public class CheckoutServiceTests
             new CheckoutBasketCommandValidator());
     }
 
-    private static CheckoutBasketCommand CreateCommand(Guid anonymousId, string key)
+    private static CheckoutBasketCommand CreateCommand(Guid anonymousId, string key, string? couponCode = null)
     {
         return new CheckoutBasketCommand(
             null,
             anonymousId,
             key,
-            new CheckoutAddressModel("Line1", null, "City", "PC1", "GB"));
+            new CheckoutAddressModel("Line1", null, "City", "PC1", "GB"),
+            couponCode);
     }
 }

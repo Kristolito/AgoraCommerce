@@ -131,7 +131,8 @@ curl -X POST http://localhost:5085/api/v1/checkout \
       "city": "London",
       "postcode": "NW1",
       "country": "GB"
-    }
+    },
+    "couponCode": "SAVE10"
   }'
 ```
 
@@ -150,6 +151,41 @@ Get order by id:
 curl -H "X-Anonymous-Id: <ANON_GUID>" \
   "http://localhost:5085/api/v1/orders/<ORDER_ID>"
 ```
+
+## Coupons Examples
+
+Create coupon (admin):
+```bash
+curl -X POST http://localhost:5085/api/v1/admin/coupons \
+  -H "Content-Type: application/json" \
+  -d '{
+    "code":"SAVE10",
+    "type":"Percent",
+    "amount":10,
+    "currency":null,
+    "isActive":true,
+    "activeFrom":null,
+    "activeTo":null,
+    "maxRedemptions":100
+  }'
+```
+
+Validate coupon:
+```bash
+curl -X POST http://localhost:5085/api/v1/coupons/validate \
+  -H "Content-Type: application/json" \
+  -d '{"code":"SAVE10","subtotal":100}'
+```
+
+List coupons (admin):
+```bash
+curl "http://localhost:5085/api/v1/admin/coupons?page=1&pageSize=20"
+```
+
+Coupon checkout behavior:
+- If `couponCode` is valid at checkout, response includes `subtotal`, `discount`, `total`, and `couponCode`
+- Coupon redemption is incremented only once for a successful checkout transaction
+- Retrying checkout with the same `Idempotency-Key` returns the same order and does not redeem coupon again
 
 ## Tests
 

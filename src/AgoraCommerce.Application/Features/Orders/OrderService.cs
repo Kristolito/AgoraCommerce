@@ -93,6 +93,7 @@ public sealed class OrderService(
             order.Discount,
             order.Total,
             order.Currency,
+            order.CouponCode,
             address,
             lines,
             order.CreatedAt);

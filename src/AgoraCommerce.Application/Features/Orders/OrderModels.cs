@@ -25,6 +25,7 @@ public sealed record OrderModel(
     decimal Discount,
     decimal Total,
     string Currency,
+    string? CouponCode,
     AddressModel ShippingAddress,
     IReadOnlyList<OrderLineModel> Lines,
     DateTimeOffset CreatedAt);

@@ -9,7 +9,7 @@ public sealed record CheckoutAddressRequest(
     string Postcode,
     string Country);
 
-public sealed record CheckoutRequest(CheckoutAddressRequest ShippingAddress);
+public sealed record CheckoutRequest(CheckoutAddressRequest ShippingAddress, string? CouponCode);
 
 public sealed class CheckoutResponse
 {
@@ -26,6 +26,8 @@ public sealed class CheckoutResponse
     public decimal Total { get; init; }
 
     public required string Currency { get; init; }
+
+    public string? CouponCode { get; init; }
 
     public DateTimeOffset CreatedAt { get; init; }
 }
